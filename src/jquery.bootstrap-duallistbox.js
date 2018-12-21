@@ -50,7 +50,8 @@
       btnMoveText: '&gt;',                                                                // string, sets the text for the "Move" button
       btnRemoveText: '&lt;',                                                              // string, sets the text for the "Remove" button
       btnMoveAllText: '&gt;&gt;',                                                         // string, sets the text for the "Move All" button
-      btnRemoveAllText: '&lt;&lt;'                                                        // string, sets the text for the "Remove All" button
+      btnRemoveAllText: '&lt;&lt;',                                                        // string, sets the text for the "Remove All" button
+      customFilter: false
     },
     // Selections are invisible on android if the containing select is styled with CSS
     // http://code.google.com/p/android/issues/detail?id=16922
@@ -164,8 +165,8 @@
     refreshInfo(dualListbox);
   }
 
-  function filter(dualListbox, selectIndex) {
-    if (!dualListbox.settings.showFilterInputs) {
+  function filter(dualListbox, selectIndex) {    
+    if (!dualListbox.settings.showFilterInputs && !dualListbox.settings.customFilter) {
       return;
     }
 
@@ -193,7 +194,7 @@
     options.each(function(index, item) {
       var $item = $(item),
         isFiltered = true;
-      if (item.text.match(regex) || (dualListbox.settings.filterOnValues && $item.attr('value').match(regex) ) ) {
+        if ((item.text.match(regex) || (dualListbox.settings.filterOnValues && $item.attr('value').match(regex))) && (!dualListbox.settings.customFilter || dualListbox.settings.customFilter(dualListbox, selectIndex, $item)) ) {
         isFiltered = false;
         dualListbox.elements['select'+selectIndex].append($item.clone(true).prop('selected', $item.data('_selected')));
       }
